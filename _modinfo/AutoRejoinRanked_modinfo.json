@@ -1,0 +1,9 @@
+{
+  "HarmonyId": "maxdistructo.AutoRejoinRanked",
+  "DisplayName": "AutoRejoinRanked",
+  "Authors": [ "MaxDistructo" ],
+  "Description": "Automatically rejoins the Ranked queue after you are done with a Ranked Game",
+  "Version": "1.0.0",
+  "RequiredMods": [],
+  "Settings": {}
+}
