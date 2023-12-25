@@ -39,6 +39,7 @@
     <Reference Include="UnityEngine.UI">
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Town of Salem 2\TownOfSalem2_Data\Managed\UnityEngine.UI.dll</HintPath>
     </Reference>
-    <EmbeddedResource Include="_modinfo/AutoRejoinRanked_modinfo.json" />
+    <EmbeddedResource Include="_modinfo/AutoRejoinRanked.modinfo.json" />
+    <EmbeddedResource Include="_modinfo/AutoRejoinRanked.resources.images.thumbnail.png" />
   </ItemGroup>
 </Project>

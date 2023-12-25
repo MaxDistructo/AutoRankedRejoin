@@ -11,12 +11,15 @@ using Home.HomeScene;
 using System.Reflection;
 using Mono.Cecil;
 using static HarmonyLib.AccessTools;
+using System.Collections.Generic;
 
 namespace AutoRejoinRanked;
 
 [Mod.SalemMod]
 public class Main
 {
+
+    
     public static void Start() 
     {
         System.Console.WriteLine("[AutoRejoinRanked] Preparing to take over the WORLD!!!!!");
@@ -30,9 +33,9 @@ public class ModInfo
     public const string PLUGIN_VERSION = "1.0.0";
 }
 
-//We need to do the following:
-//Via the settings menu, go to home
-//Then do the inputs to click on Ranked, Join Queue
+//GameSceneController is updated every time the game changes phase.
+//We detect if it's the post game by asking if the lobby is ShuttingDown (which is ONLY post game in a ranked match)
+//This triggers us to do what the settings menu does to send us back to home where the other patch takes over and sets us back into a new match.
 [HarmonyPatch(typeof (GameSceneController), "HandleGameInfoChanged")]
 public class GameSceneControllerPatch 
 {
@@ -50,13 +53,11 @@ public class GameSceneControllerPatch
             //If we are in the post game of the lobby (aka it's shutting down in 60 seconds), requeue the player
             if (Service.Game.Sim.info.lobby.Data.isShuttingDown)
             {
+                State.setLastGameMode(Service.Game.Sim.info.gameMode.Data.gameType);
                 //Leave the current game to return to the lobby.
                 ApplicationController.ApplicationContext.pendingTransitionType = CutoutTransitionType.NONE;
                 Service.Game.Network.Send((GameMessage)new RemovePlayerFromCellMessage(RemovedFromGameReason.EXIT_TO_MAIN_MENU, false));
-                //Join the ranked queue how the main menu would cause it
-                Service.Home.UserService.RequestGame("", GameType.Ranked, Service.Home.PlatformService.IsOnBetaBranch());
-
-                //Let AutoAcceptRanked take over from here in the RankedQueueController
+                //Once loaded into the main screen, if the last game mode was Ranked, set it there.
             }
         }
         return;
@@ -64,23 +65,23 @@ public class GameSceneControllerPatch
 
     
 }
-//We patch the HomeScene controller to not allow players to join another gamemode in ranked queue
-//This is because we cannot directly patch the button to be disabled automatically so if they attempt to
-//play another gamemode, disable the button.
-[HarmonyPatch(typeof(HomeSceneController), "HandleClickJoinSelectedGameMode")]
-public class HomeSceneControllerPatch
+//We patch the HomeScene controller to setup our data storage state and joining a gamemode once we are sent back here by the GameScene controller patch
+[HarmonyPatch(typeof(HomeSceneController), "Start")]
+public class HomeSceneControllerStartPatch
 {
     [HarmonyPrefix]
-    public static void Prefix(HomeSceneController __instance)
+    public static void Postfix(HomeSceneController __instance) 
     {
-
-        System.Console.WriteLine("[AutoRejoinRanked] PATCH ENTRY (HomeSceneController#HandleClickJoinSelectedGameMode)");
-        if (__instance == null)
+        State.Init();
+        if(State.getLastGameMode() == GameType.Ranked)
         {
-            System.Console.WriteLine("Instance is null");
-            return;
+            //Use the built in methods to set us to be a ranked game then click join for the user.
+            MethodInfo methodInfo = typeof(HomeSceneController).GetMethod("SetSelectedGameMode", BindingFlags.NonPublic | BindingFlags.Instance);
+            var parameters = new object[] { GameType.Ranked };
+            methodInfo.Invoke(__instance, parameters);
+            __instance.HandleClickJoinSelectedGameMode();
+            State.setLastGameMode(GameType.None);
+            //Let AutoAcceptRanked take over from here in the RankedQueueController
         }
-        UnityEngine.UI.Button joinSelectedGameModeButtonRef = FieldRefAccess<HomeSceneController, UnityEngine.UI.Button>(__instance, "joinSelectedGameModeButton");
-        __instance.joinSelectedGameModeButton.interactable = false;
     }
 }
