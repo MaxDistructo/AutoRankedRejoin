@@ -13,6 +13,16 @@
         "DefaultValue": false,
         "AvailableInGame": false
       }
+    ],
+    "IntegerInputSettings": [
+      {
+        "Name": "Lobby Leave Delay",
+        "Description": "Input the number of seconds to wait before leaving the lobby.",
+        "DefaultValue": 0,
+        "AvailableInGame": false,
+        "MinValue": 0,
+        "MaxValue": 60
+      }
     ]
   }
 }

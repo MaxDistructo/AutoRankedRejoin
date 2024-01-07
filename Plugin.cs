@@ -9,6 +9,7 @@ using Server.Shared.State;
 using Services;
 using SML;
 using System.Reflection;
+using System.Threading;
 
 namespace AutoRejoinRanked;
 
@@ -46,6 +47,10 @@ public class GameSceneControllerPatch
         //If we are in the post game of the lobby (aka it's shutting down in 60 seconds), requeue the player
         if (Service.Game.Sim.info.gameMode.Data.gameType == GameType.Ranked && Service.Game.Sim.info.lobby.Data.isShuttingDown)
         {
+            if (ModSettings.GetInt("Lobby Leave Delay", "maxdistructo.AutoRejoinRanked") > 0)
+            {
+                Thread.Sleep(ModSettings.GetInt("Lobby Leave Delay", "maxdistructo.AutoRejoinRanked") * 1000);
+            }
             State.setLastGameMode(Service.Game.Sim.info.gameMode.Data.gameType);
             //Leave the current game to return to the lobby.
             ApplicationController.ApplicationContext.pendingTransitionType = CutoutTransitionType.NONE;

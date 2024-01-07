@@ -28,16 +28,16 @@
   
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Town of Salem 2\BepInEx\core\0Harmony.dll</HintPath>
+      <HintPath>F:\SteamLibrary\steamapps\common\Town of Salem 2\BepInEx\core\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Town of Salem 2\TownOfSalem2_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>F:\SteamLibrary\steamapps\common\Town of Salem 2\TownOfSalem2_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="SalemModLoader">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Town of Salem 2\BepInEx\plugins\SalemModLoader.dll</HintPath>
+      <HintPath>F:\SteamLibrary\steamapps\common\Town of Salem 2\BepInEx\plugins\SalemModLoader.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Town of Salem 2\TownOfSalem2_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <HintPath>F:\SteamLibrary\steamapps\common\Town of Salem 2\TownOfSalem2_Data\Managed\UnityEngine.UI.dll</HintPath>
     </Reference>
     <EmbeddedResource Include="_modinfo/AutoRejoinRanked.modinfo.json" />
     <EmbeddedResource Include="_modinfo/AutoRejoinRanked.resources.images.thumbnail.png" />
