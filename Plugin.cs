@@ -8,8 +8,9 @@ using Server.Shared.Messages;
 using Server.Shared.State;
 using Services;
 using SML;
+using System.Collections;
 using System.Reflection;
-using System.Threading;
+using UnityEngine;
 
 namespace AutoRejoinRanked;
 
@@ -19,6 +20,21 @@ public class Main
     public static void Start()
     {
         System.Console.WriteLine("[AutoRejoinRanked] Preparing to take over the WORLD!!!!!");
+    }
+    public static IEnumerator PostGameWaitCorouine(int delay)
+    {
+        State.setLastGameMode(Service.Game.Sim.info.gameMode.Data.gameType);
+        yield return new WaitForSeconds(delay);
+        //Leave the current game to return to the lobby.
+        ApplicationController.ApplicationContext.pendingTransitionType = CutoutTransitionType.NONE;
+        Service.Game.Network.Send((GameMessage)new RemovePlayerFromCellMessage(RemovedFromGameReason.EXIT_TO_MAIN_MENU, false));
+    }
+    public static void SendToMainMenu()
+    {
+        State.setLastGameMode(Service.Game.Sim.info.gameMode.Data.gameType);
+        //Leave the current game to return to the lobby.
+        ApplicationController.ApplicationContext.pendingTransitionType = CutoutTransitionType.NONE;
+        Service.Game.Network.Send((GameMessage)new RemovePlayerFromCellMessage(RemovedFromGameReason.EXIT_TO_MAIN_MENU, false));
     }
 }
 
@@ -49,22 +65,26 @@ public class GameSceneControllerPatch
         {
             if (ModSettings.GetInt("Lobby Leave Delay", "maxdistructo.AutoRejoinRanked") > 0)
             {
-                Thread.Sleep(ModSettings.GetInt("Lobby Leave Delay", "maxdistructo.AutoRejoinRanked") * 1000);
+                __instance.StartCoroutine(Main.PostGameWaitCorouine(ModSettings.GetInt("Lobby Leave Delay", "maxdistructo.AutoRejoinRanked")));
             }
-            State.setLastGameMode(Service.Game.Sim.info.gameMode.Data.gameType);
-            //Leave the current game to return to the lobby.
-            ApplicationController.ApplicationContext.pendingTransitionType = CutoutTransitionType.NONE;
-            Service.Game.Network.Send((GameMessage)new RemovePlayerFromCellMessage(RemovedFromGameReason.EXIT_TO_MAIN_MENU, false));
+            else 
+            {
+                Main.SendToMainMenu();
+            }
+            
             //Once loaded into the main screen, if the last game mode was Ranked, set it there.
         }
         //In other game modes, the lobby does not end but instead restarts. We check if the restart timer is running and if so, kick the player out and cause the requeue.
         else if (ModSettings.GetBool("Use for all Game Modes", "maxdistructo.AutoRejoinRanked") && Service.Game.Sim.info.lobby.Data.restartTimer.GetWholeSecondsRemaining() > 0)
         {
-            State.setLastGameMode(Service.Game.Sim.info.gameMode.Data.gameType);
-            //Leave the current game to return to the lobby.
-            ApplicationController.ApplicationContext.pendingTransitionType = CutoutTransitionType.NONE;
-            Service.Game.Network.Send((GameMessage)new RemovePlayerFromCellMessage(RemovedFromGameReason.EXIT_TO_MAIN_MENU, false));
-            //Once loaded into the main screen, if the last game mode was Ranked, set it there.
+            if (ModSettings.GetInt("Lobby Leave Delay", "maxdistructo.AutoRejoinRanked") > 0)
+            {
+                __instance.StartCoroutine(Main.PostGameWaitCorouine(ModSettings.GetInt("Lobby Leave Delay", "maxdistructo.AutoRejoinRanked")));
+            }
+            else
+            {
+                Main.SendToMainMenu();
+            }
         }
         return;
     }
