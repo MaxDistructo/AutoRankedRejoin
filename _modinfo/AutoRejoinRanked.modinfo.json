@@ -3,7 +3,26 @@
   "DisplayName": "AutoRejoinRanked",
   "Authors": [ "MaxDistructo" ],
   "Description": "Automatically rejoins the Ranked queue after you are done with a Ranked Game",
-  "Version": "1.0.0",
+  "Version": "1.1.0",
   "RequiredMods": [],
-  "Settings": {}
+  "Settings": {
+    "CheckboxSettings": [
+      {
+        "Name": "Use for all Game Modes",
+        "Description": "This was suggested by a crazy person but toggles the mod to work on ALL gamemodes, not just Ranked.",
+        "DefaultValue": false,
+        "AvailableInGame": false
+      }
+    ],
+    "IntegerInputSettings": [
+      {
+        "Name": "Lobby Leave Delay",
+        "Description": "Input the number of seconds to wait before leaving the lobby.",
+        "DefaultValue": 0,
+        "AvailableInGame": false,
+        "MinValue": 0,
+        "MaxValue": 60
+      }
+    ]
+  }
 }
