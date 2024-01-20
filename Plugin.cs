@@ -99,7 +99,7 @@ public class HomeSceneControllerStartPatch
     public static void Postfix(HomeSceneController __instance)
     {
         State.Init();
-        if (State.getLastGameMode() == GameType.Ranked || ModSettings.GetBool("Use for all Game Modes", "maxdistructo.AutoRejoinRanked"))
+        if (State.getLastGameMode() == GameType.Ranked || (ModSettings.GetBool("Use for all Game Modes", "maxdistructo.AutoRejoinRanked") && State.getLastGameMode() != GameType.None))
         {
             //Use the built in methods to set us to be a ranked game then click join for the user.
             MethodInfo methodInfo = typeof(HomeSceneController).GetMethod("SetSelectedGameMode", BindingFlags.NonPublic | BindingFlags.Instance);
