@@ -33,6 +33,9 @@
     <Reference Include="Assembly-CSharp">
       <HintPath>F:\SteamLibrary\steamapps\common\Town of Salem 2\TownOfSalem2_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="BetterTOS2">
+      <HintPath>..\..\SteamLibrary\steamapps\common\Town of Salem 2\SalemModLoader\Mods\BetterTOS2.dll</HintPath>
+    </Reference>
     <Reference Include="SalemModLoader">
       <HintPath>F:\SteamLibrary\steamapps\common\Town of Salem 2\BepInEx\plugins\SalemModLoader.dll</HintPath>
     </Reference>
