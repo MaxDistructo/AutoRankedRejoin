@@ -3,9 +3,9 @@
   "DisplayName": "AutoRejoinRanked",
   "Authors": [ "MaxDistructo" ],
   "Description": "Automatically rejoins the Ranked queue after you are done with a Ranked Game",
-  "Version": "1.1.1",
+  "Version": "1.2.0",
   "RequiredMods": [],
-  "ConflictingMods": [ "curt.tuba.better.tos" ],
+  "ConflictingMods": [],
   "Settings": {
     "CheckboxSettings": [
       {
