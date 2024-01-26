@@ -12,6 +12,8 @@ using System.Collections;
 using System.Reflection;
 using UnityEngine;
 
+using BetterTOS2;
+
 namespace AutoRejoinRanked;
 
 [Mod.SalemMod]
@@ -23,16 +25,11 @@ public class Main
     }
     public static IEnumerator PostGameWaitCorouine(int delay)
     {
-        State.setLastGameMode(Service.Game.Sim.info.gameMode.Data.gameType);
         yield return new WaitForSeconds(delay);
-        //Leave the current game to return to the lobby.
-        ApplicationController.ApplicationContext.pendingTransitionType = CutoutTransitionType.NONE;
-        Service.Game.Network.Send((GameMessage)new RemovePlayerFromCellMessage(RemovedFromGameReason.EXIT_TO_MAIN_MENU, false));
+        SendToMainMenu();
     }
     public static void SendToMainMenu()
     {
-        State.setLastGameMode(Service.Game.Sim.info.gameMode.Data.gameType);
-        //Leave the current game to return to the lobby.
         ApplicationController.ApplicationContext.pendingTransitionType = CutoutTransitionType.NONE;
         Service.Game.Network.Send((GameMessage)new RemovePlayerFromCellMessage(RemovedFromGameReason.EXIT_TO_MAIN_MENU, false));
     }
@@ -42,7 +39,7 @@ public class ModInfo
 {
     public const string PLUGIN_GUID = "AutoRejoinRanked";
     public const string PLUGIN_NAME = "Auto Rejoin Ranked";
-    public const string PLUGIN_VERSION = "1.1.0";
+    public const string PLUGIN_VERSION = "1.2.0";
 }
 
 //GameSceneController is updated every time the game changes phase.
@@ -63,20 +60,31 @@ public class GameSceneControllerPatch
         //If we are in the post game of the lobby (aka it's shutting down in 60 seconds), requeue the player
         if (Service.Game.Sim.info.gameMode.Data.gameType == GameType.Ranked && Service.Game.Sim.info.lobby.Data.isShuttingDown)
         {
+            //BTOS2 Compatibility, Checks if the mod is installed and if so, we check if it's the modded ranked game provided.
+            if (ModStates.IsInstalled("curt.tuba.better.tos") && BTOSInfo.IS_MODDED)
+            {
+                State.setLastGameMode(GameType2.BTOS2Casual);
+            }
+            else 
+            {
+                //Vanilla Ranked
+                State.setLastGameMode(Service.Game.Sim.info.gameMode.Data.gameType);
+            }
             if (ModSettings.GetInt("Lobby Leave Delay", "maxdistructo.AutoRejoinRanked") > 0)
             {
                 __instance.StartCoroutine(Main.PostGameWaitCorouine(ModSettings.GetInt("Lobby Leave Delay", "maxdistructo.AutoRejoinRanked")));
             }
-            else 
+            else
             {
                 Main.SendToMainMenu();
             }
-            
+
             //Once loaded into the main screen, if the last game mode was Ranked, set it there.
         }
         //In other game modes, the lobby does not end but instead restarts. We check if the restart timer is running and if so, kick the player out and cause the requeue.
         else if (ModSettings.GetBool("Use for all Game Modes", "maxdistructo.AutoRejoinRanked") && Service.Game.Sim.info.lobby.Data.restartTimer.GetWholeSecondsRemaining() > 0)
         {
+            State.setLastGameMode(Service.Game.Sim.info.gameMode.Data.gameType);
             if (ModSettings.GetInt("Lobby Leave Delay", "maxdistructo.AutoRejoinRanked") > 0)
             {
                 __instance.StartCoroutine(Main.PostGameWaitCorouine(ModSettings.GetInt("Lobby Leave Delay", "maxdistructo.AutoRejoinRanked")));
@@ -99,15 +107,28 @@ public class HomeSceneControllerStartPatch
     public static void Postfix(HomeSceneController __instance)
     {
         State.Init();
-        if (State.getLastGameMode() == GameType.Ranked || (ModSettings.GetBool("Use for all Game Modes", "maxdistructo.AutoRejoinRanked") && State.getLastGameMode() != GameType.None))
+        if (State.getLastGameMode() == GameType2.Ranked || (ModSettings.GetBool("Use for all Game Modes", "maxdistructo.AutoRejoinRanked") && State.getLastGameMode() != GameType2.None && State.getLastGameMode() != GameType2.Custom && State.getLastGameMode() != GameType2.BTOS2CustomPlus))
         {
-            //Use the built in methods to set us to be a ranked game then click join for the user.
-            MethodInfo methodInfo = typeof(HomeSceneController).GetMethod("SetSelectedGameMode", BindingFlags.NonPublic | BindingFlags.Instance);
-            var parameters = new object[] { State.getLastGameMode() };
-            methodInfo.Invoke(__instance, parameters);
-            __instance.HandleClickJoinSelectedGameMode();
-            State.setLastGameMode(GameType.None);
-            //Let AutoAcceptRanked take over from here in the RankedQueueController
+            if (ModStates.IsInstalled("curt.tuba.better.tos") && State.getLastGameMode() == GameType2.BTOS2Casual)
+            {
+             //Awaiting BTOS2 patch
+                //AddHomeSceneButtons.JoinCasualMode();
+            }
+            else if (State.getLastGameMode() == GameType2.Custom || State.getLastGameMode() == GameType2.BTOS2CustomPlus)
+            {
+                //IGNORE
+                //We can't support auto joining custom games.
+            }
+            else
+            {
+                //Use the built in methods to set us to be a ranked game then click join for the user.
+                MethodInfo methodInfo = typeof(HomeSceneController).GetMethod("SetSelectedGameMode", BindingFlags.NonPublic | BindingFlags.Instance);
+                var parameters = new object[] { State.convertToGameType(State.getLastGameMode()) };
+                methodInfo.Invoke(__instance, parameters);
+                __instance.HandleClickJoinSelectedGameMode();
+                State.setLastGameMode(GameType.None);
+                //Let AutoAcceptRanked take over from here in the RankedQueueController
+            }
         }
     }
 }
