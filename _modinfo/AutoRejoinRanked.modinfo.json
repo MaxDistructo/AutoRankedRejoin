@@ -5,6 +5,7 @@
   "Description": "Automatically rejoins the Ranked queue after you are done with a Ranked Game",
   "Version": "1.1.1",
   "RequiredMods": [],
+  "ConflictingMods": [ "curt.tuba.better.tos" ],
   "Settings": {
     "CheckboxSettings": [
       {
