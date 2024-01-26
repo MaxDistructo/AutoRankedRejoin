@@ -107,7 +107,7 @@ public class HomeSceneControllerStartPatch
     public static void Postfix(HomeSceneController __instance)
     {
         State.Init();
-        if (State.getLastGameMode() == GameType2.Ranked || (ModSettings.GetBool("Use for all Game Modes", "maxdistructo.AutoRejoinRanked") && State.getLastGameMode() != GameType2.None && State.getLastGameMode() != GameType2.Custom && State.getLastGameMode() != GameType2.BTOS2CustomPlus))
+        if (State.getLastGameMode() == GameType2.Ranked || (ModSettings.GetBool("Use for all Game Modes", "maxdistructo.AutoRejoinRanked") && State.getLastGameMode() != GameType2.None))
         {
             if (ModStates.IsInstalled("curt.tuba.better.tos") && State.getLastGameMode() == GameType2.BTOS2Casual)
             {
