@@ -64,7 +64,7 @@ public class GameSceneControllerPatch
         if (Service.Game.Sim.info.gameMode.Data.gameType == GameType.Ranked && Service.Game.Sim.info.lobby.Data.isShuttingDown)
         {
             //BTOS2 Compatibility, Checks if the mod is installed and if so, we check if it's the modded ranked game provided.
-            if (ModStates.IsInstalled("curt.tuba.better.tos2") && BTOSInfo.IS_MODDED)
+            if (ModStates.IsInstalled("curtis.tuba.better.tos2") && BTOSInfo.IS_MODDED)
             {
                 State.setLastGameMode(GameType2.BTOS2Casual);
             }
@@ -112,7 +112,7 @@ public class HomeSceneControllerStartPatch
         State.Init();
         if (State.getLastGameMode() == GameType2.Ranked || (ModSettings.GetBool("Use for all Game Modes", "maxdistructo.AutoRejoinRanked") && State.getLastGameMode() != GameType2.None))
         {
-            if (ModStates.IsInstalled("curt.tuba.better.tos2") && State.getLastGameMode() == GameType2.BTOS2Casual)
+            if (ModStates.IsInstalled("curtis.tuba.better.tos2") && State.getLastGameMode() == GameType2.BTOS2Casual)
             {
                 //START BTOS2 LOGIC FOR REJOINING CASUAL MODE
                 if (AddHomeSceneButtons.joinedQueue.AddSeconds(10.0) > DateTime.Now)
