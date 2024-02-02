@@ -13,6 +13,9 @@ using System.Reflection;
 using UnityEngine;
 
 using BetterTOS2;
+using BetterTOS2.Messages;
+using Game.Interface;
+using System;
 
 namespace AutoRejoinRanked;
 
@@ -39,7 +42,7 @@ public class ModInfo
 {
     public const string PLUGIN_GUID = "AutoRejoinRanked";
     public const string PLUGIN_NAME = "Auto Rejoin Ranked";
-    public const string PLUGIN_VERSION = "1.2.0";
+    public const string PLUGIN_VERSION = "1.2.1";
 }
 
 //GameSceneController is updated every time the game changes phase.
@@ -61,7 +64,7 @@ public class GameSceneControllerPatch
         if (Service.Game.Sim.info.gameMode.Data.gameType == GameType.Ranked && Service.Game.Sim.info.lobby.Data.isShuttingDown)
         {
             //BTOS2 Compatibility, Checks if the mod is installed and if so, we check if it's the modded ranked game provided.
-            if (ModStates.IsInstalled("curt.tuba.better.tos") && BTOSInfo.IS_MODDED)
+            if (ModStates.IsInstalled("curt.tuba.better.tos2") && BTOSInfo.IS_MODDED)
             {
                 State.setLastGameMode(GameType2.BTOS2Casual);
             }
@@ -109,10 +112,25 @@ public class HomeSceneControllerStartPatch
         State.Init();
         if (State.getLastGameMode() == GameType2.Ranked || (ModSettings.GetBool("Use for all Game Modes", "maxdistructo.AutoRejoinRanked") && State.getLastGameMode() != GameType2.None))
         {
-            if (ModStates.IsInstalled("curt.tuba.better.tos") && State.getLastGameMode() == GameType2.BTOS2Casual)
+            if (ModStates.IsInstalled("curt.tuba.better.tos2") && State.getLastGameMode() == GameType2.BTOS2Casual)
             {
-             //Awaiting BTOS2 patch
-                //AddHomeSceneButtons.JoinCasualMode();
+                //START BTOS2 LOGIC FOR REJOINING CASUAL MODE
+                if (AddHomeSceneButtons.joinedQueue.AddSeconds(10.0) > DateTime.Now)
+                {
+                    Service.Game.HudMessage.ShowMessage("You must wait 10 seconds before rejoining the Casual Mode Queue", interrupt: true, messageType: HudMessageType.Warning);
+                }
+                else
+                {
+                    if ((UnityEngine.Object)BTOSInfo.CasualModeController == (UnityEngine.Object)null)
+                    {
+                        GameObject gameObject = UnityEngine.Object.Instantiate<GameObject>(BTOSInfo.assetBundle.LoadAsset<GameObject>("CasualModeUI"), GameObject.Find("HomeUI(Clone)/HomeScreenMainCanvas/SafeArea/").transform);
+                        gameObject.transform.SetAsLastSibling();
+                        gameObject.transform.localScale = new Vector3(1.2f, 1.2f, 1f);
+                        BTOSInfo.CasualModeController = gameObject.AddComponent<CasualModeMenuController>();
+                    }
+                    BTOSInfo.NetworkService.SendMessage((Message)new JoinCasualQueue());
+                }
+                //END BTOS2 LOGIC
             }
             else if (State.getLastGameMode() == GameType2.Custom || State.getLastGameMode() == GameType2.BTOS2CustomPlus)
             {
