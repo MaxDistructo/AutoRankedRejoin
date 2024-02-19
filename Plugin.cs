@@ -74,9 +74,9 @@ public class GameSceneControllerPatch
                 //Vanilla Ranked
                 State.setLastGameMode(Service.Game.Sim.info.gameMode.Data.gameType);
             }
-            if (ModSettings.GetInt("Lobby Leave Delay", "maxdistructo.AutoRequeue") > 0)
+            if (ModSettings.GetInt("Lobby Leave Delay", "maxdistructo.AutoRejoinRanked") > 0)
             {
-                __instance.StartCoroutine(Main.PostGameWaitCorouine(ModSettings.GetInt("Lobby Leave Delay", "maxdistructo.AutoRequeue")));
+                __instance.StartCoroutine(Main.PostGameWaitCorouine(ModSettings.GetInt("Lobby Leave Delay", "maxdistructo.AutoRejoinRanked")));
             }
             else
             {
@@ -86,12 +86,12 @@ public class GameSceneControllerPatch
             //Once loaded into the main screen, if the last game mode was Ranked, set it there.
         }
         //In other game modes, the lobby does not end but instead restarts. We check if the restart timer is running and if so, kick the player out and cause the requeue.
-        else if (ModSettings.GetBool("Use for all Game Modes", "maxdistructo.AutoRequeue") && Service.Game.Sim.info.lobby.Data.restartTimer.GetWholeSecondsRemaining() > 0)
+        else if (ModSettings.GetBool("Use for all Game Modes", "maxdistructo.AutoRejoinRanked") && Service.Game.Sim.info.lobby.Data.restartTimer.GetWholeSecondsRemaining() > 0)
         {
             State.setLastGameMode(Service.Game.Sim.info.gameMode.Data.gameType);
             if (ModSettings.GetInt("Lobby Leave Delay", "maxdistructo.AutoRejoinRanked") > 0)
             {
-                __instance.StartCoroutine(Main.PostGameWaitCorouine(ModSettings.GetInt("Lobby Leave Delay", "maxdistructo.AutoRequeue")));
+                __instance.StartCoroutine(Main.PostGameWaitCorouine(ModSettings.GetInt("Lobby Leave Delay", "maxdistructo.AutoRejoinRanked")));
             }
             else
             {
@@ -109,7 +109,7 @@ public class HomeSceneControllerStartPatch
     public static void Postfix(HomeSceneController __instance)
     {
         State.Init();
-        if ((State.getLastGameMode() == GameType2.Ranked || State.getLastGameMode() == GameType2.BTOS2Casual || (ModSettings.GetBool("Use for all Game Modes", "maxdistructo.AutoRequeue") && State.getLastGameMode() != GameType2.None)) && State.getModState())
+        if ((State.getLastGameMode() == GameType2.Ranked || State.getLastGameMode() == GameType2.BTOS2Casual || (ModSettings.GetBool("Use for all Game Modes", "maxdistructo.AutoRejoinRanked") && State.getLastGameMode() != GameType2.None)) && State.getModState())
         {
             State.toggleModTriggered();
             if (ModStates.IsInstalled("curtis.tuba.better.tos2") && State.getLastGameMode() == GameType2.BTOS2Casual)
