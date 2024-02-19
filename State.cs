@@ -1,6 +1,6 @@
 ﻿using Server.Shared.Info;
 
-namespace AutoRejoinQueue
+namespace AutoRequeue
 {
     public class State
     {
