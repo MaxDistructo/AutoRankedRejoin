@@ -2,9 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
-    <AssemblyName>AutoRejoinQueue</AssemblyName>
+    <AssemblyName>AutoRequeue</AssemblyName>
     <Description></Description>
-    <RootNamespace>AutoRejoinQueue</RootNamespace>
+    <RootNamespace>AutoRequeue</RootNamespace>
     <Nullable>disable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>

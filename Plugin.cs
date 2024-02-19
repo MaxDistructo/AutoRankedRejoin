@@ -17,14 +17,14 @@ using BetterTOS2.Messages;
 using Game.Interface;
 using System;
 
-namespace AutoRejoinQueue;
+namespace AutoRequeue;
 
 [Mod.SalemMod]
 public class Main
 {
     public static void Start()
     {
-        System.Console.WriteLine("[AutoRejoinQueue] Preparing to take over the WORLD!!!!!");
+        System.Console.WriteLine("[AutoRequeue] Preparing to take over the WORLD!!!!!");
     }
     public static IEnumerator PostGameWaitCorouine(int delay)
     {
@@ -41,8 +41,8 @@ public class Main
 
 public class ModInfo
 {
-    public const string PLUGIN_GUID = "AutoRejoinQueue";
-    public const string PLUGIN_NAME = "Auto Rejoin Queue";
+    public const string PLUGIN_GUID = "AutoRequeue";
+    public const string PLUGIN_NAME = "Auto Requeue";
     public const string PLUGIN_VERSION = "1.2.2";
 }
 
@@ -55,7 +55,7 @@ public class GameSceneControllerPatch
     [HarmonyPrefix]
     public static void Prefix(GameSceneController __instance, GameInfo gameInfo)
     {
-        System.Console.WriteLine("[AutoRejoinQueue] PATCH ENTRY (GameSceneController)");
+        System.Console.WriteLine("[AutoRequeue] PATCH ENTRY (GameSceneController)");
         if (__instance == null)
         {
             System.Console.WriteLine("Instance is null");
