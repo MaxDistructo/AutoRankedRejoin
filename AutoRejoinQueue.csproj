@@ -2,9 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
-    <AssemblyName>AutoRejoinRanked</AssemblyName>
+    <AssemblyName>AutoRejoinQueue</AssemblyName>
     <Description></Description>
-    <RootNamespace>AutoRejoinRanked</RootNamespace>
+    <RootNamespace>AutoRejoinQueue</RootNamespace>
     <Nullable>disable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
