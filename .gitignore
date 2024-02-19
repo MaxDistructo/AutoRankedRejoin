@@ -1,7 +1,7 @@
-﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
-################################################################################
+# SML
+libs/
+obj/
+bin/
+.vs/
 
-/obj
-/bin/Debug/net48
-/.vs
+SteamLibrary.targets

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoRejoinRanked", "AutoRejoinRanked.csproj", "{11EF67E4-C0CE-4D08-86B2-71478A1DF420}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoRejoinQueue", "AutoRejoinQueue.csproj", "{11EF67E4-C0CE-4D08-86B2-71478A1DF420}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

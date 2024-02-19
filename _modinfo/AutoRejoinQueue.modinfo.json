@@ -1,9 +1,9 @@
 {
   "HarmonyId": "maxdistructo.AutoRejoinRanked",
-  "DisplayName": "AutoRejoinRanked",
+  "DisplayName": "AutoRejoinQueue",
   "Authors": [ "MaxDistructo" ],
-  "Description": "Automatically rejoins the Ranked queue after you are done with a Ranked Game",
-  "Version": "1.2.1",
+  "Description": "Automatically rejoins the Ranked queue after you are done with a Ranked Game. Also works with BetterTOS2 Classic for automatically rejoining.",
+  "Version": "1.2.2",
   "RequiredMods": [],
   "ConflictingMods": [],
   "Settings": {

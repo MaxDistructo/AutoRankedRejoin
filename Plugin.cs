@@ -17,14 +17,14 @@ using BetterTOS2.Messages;
 using Game.Interface;
 using System;
 
-namespace AutoRejoinRanked;
+namespace AutoRejoinQueue;
 
 [Mod.SalemMod]
 public class Main
 {
     public static void Start()
     {
-        System.Console.WriteLine("[AutoRejoinRanked] Preparing to take over the WORLD!!!!!");
+        System.Console.WriteLine("[AutoRejoinQueue] Preparing to take over the WORLD!!!!!");
     }
     public static IEnumerator PostGameWaitCorouine(int delay)
     {
@@ -35,14 +35,15 @@ public class Main
     {
         ApplicationController.ApplicationContext.pendingTransitionType = CutoutTransitionType.NONE;
         Service.Game.Network.Send((GameMessage)new RemovePlayerFromCellMessage(RemovedFromGameReason.EXIT_TO_MAIN_MENU, false));
+        State.toggleModTriggered();
     }
 }
 
 public class ModInfo
 {
-    public const string PLUGIN_GUID = "AutoRejoinRanked";
-    public const string PLUGIN_NAME = "Auto Rejoin Ranked";
-    public const string PLUGIN_VERSION = "1.2.1";
+    public const string PLUGIN_GUID = "AutoRejoinQueue";
+    public const string PLUGIN_NAME = "Auto Rejoin Queue";
+    public const string PLUGIN_VERSION = "1.2.2";
 }
 
 //GameSceneController is updated every time the game changes phase.
@@ -54,7 +55,7 @@ public class GameSceneControllerPatch
     [HarmonyPrefix]
     public static void Prefix(GameSceneController __instance, GameInfo gameInfo)
     {
-        System.Console.WriteLine("[AutoRejoinRanked] PATCH ENTRY (GameSceneController)");
+        System.Console.WriteLine("[AutoRejoinQueue] PATCH ENTRY (GameSceneController)");
         if (__instance == null)
         {
             System.Console.WriteLine("Instance is null");
@@ -99,8 +100,6 @@ public class GameSceneControllerPatch
         }
         return;
     }
-
-
 }
 //We patch the HomeScene controller to setup our data storage state and joining a gamemode once we are sent back here by the GameScene controller patch
 [HarmonyPatch(typeof(HomeSceneController), "Start")]
@@ -110,8 +109,9 @@ public class HomeSceneControllerStartPatch
     public static void Postfix(HomeSceneController __instance)
     {
         State.Init();
-        if (State.getLastGameMode() == GameType2.Ranked || (ModSettings.GetBool("Use for all Game Modes", "maxdistructo.AutoRejoinRanked") && State.getLastGameMode() != GameType2.None))
+        if ((State.getLastGameMode() == GameType2.Ranked || State.getLastGameMode() == GameType2.BTOS2Casual || (ModSettings.GetBool("Use for all Game Modes", "maxdistructo.AutoRejoinRanked") && State.getLastGameMode() != GameType2.None)) && State.getModState())
         {
+            State.toggleModTriggered();
             if (ModStates.IsInstalled("curtis.tuba.better.tos2") && State.getLastGameMode() == GameType2.BTOS2Casual)
             {
                 //START BTOS2 LOGIC FOR REJOINING CASUAL MODE
