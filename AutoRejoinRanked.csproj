@@ -21,11 +21,15 @@
   </PropertyGroup>
 
   <!-- Steam Library Path -->
-  <Import Project="$(MSBuildThisFileDirectory)\SteamLibrary.targets"/>
+  <Import Project="$(MSBuildThisFileDirectory)\SteamLibrary.targets" />
+  <ItemGroup>
+    <None Remove="_modinfo\AutoRejoinQueue.modinfo.json" />
+    <None Remove="_modinfo\AutoRejoinQueue.resources.images.thumbnail.png" />
+  </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="_modinfo/AutoRejoinRanked.modinfo.json" />
-    <EmbeddedResource Include="_modinfo/AutoRejoinRanked.resources.images.thumbnail.png" />
+    <EmbeddedResource Include="_modinfo\AutoRejoinQueue.modinfo.json" />
+    <EmbeddedResource Include="_modinfo\AutoRejoinQueue.resources.images.thumbnail.png" />
   </ItemGroup>
   
   
@@ -74,16 +78,16 @@
 		</DownloadFile>
     
     <!-- Copy over internal libraries -->
-    <Copy SourceFiles="@(Reference -> '$(SteamLibraryPath)/steamapps/common/Town of Salem 2/TownOfSalem2_Data/Managed/%(Identity).dll')" DestinationFolder="./libs" Condition="'$(SteamLibraryPath)' != '' And '%(Identity)' != '' And '$(OS)' == 'Windows_NT' And Exists(@(Reference -> '$(SteamLibraryPath)/steamapps/common/Town of Salem 2/TownOfSalem2_Data/Managed/%(Identity).dll'))" SkipUnchangedFiles="true"/>
-    <Copy SourceFiles="@(Reference -> '$(SteamLibraryPath)/steamapps/common/Town of Salem 2/TownOfSalem2.app/Contents/Data/Managed/%(Identity).dll')" DestinationFolder="./libs" Condition="'$(SteamLibraryPath)' != '' And '%(Identity)' != '' And '$(OS)' != 'Windows_NT' And Exists(@(Reference -> '$(SteamLibraryPath)/steamapps/common/Town of Salem 2/TownOfSalem2.app/Contents/Data/Managed/%(Identity).dll'))" SkipUnchangedFiles="true"/>
+    <Copy SourceFiles="@(Reference -> '$(SteamLibraryPath)/steamapps/common/Town of Salem 2/TownOfSalem2_Data/Managed/%(Identity).dll')" DestinationFolder="./libs" Condition="'$(SteamLibraryPath)' != '' And '%(Identity)' != '' And '$(OS)' == 'Windows_NT' And Exists(@(Reference -> '$(SteamLibraryPath)/steamapps/common/Town of Salem 2/TownOfSalem2_Data/Managed/%(Identity).dll'))" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(Reference -> '$(SteamLibraryPath)/steamapps/common/Town of Salem 2/TownOfSalem2.app/Contents/Data/Managed/%(Identity).dll')" DestinationFolder="./libs" Condition="'$(SteamLibraryPath)' != '' And '%(Identity)' != '' And '$(OS)' != 'Windows_NT' And Exists(@(Reference -> '$(SteamLibraryPath)/steamapps/common/Town of Salem 2/TownOfSalem2.app/Contents/Data/Managed/%(Identity).dll'))" SkipUnchangedFiles="true" />
     
     <!-- Copy over mod dependencies -->
-    <Copy SourceFiles="@(Reference -> '$(SteamLibraryPath)/steamapps/common/Town of Salem 2/SalemModLoader/Mods/%(Identity).dll')" DestinationFolder="./libs" Condition="'$(SteamLibraryPath)' != '' And '%(Identity)' != '' And '$(OS)' == 'Windows_NT' And Exists(@(Reference -> '$(SteamLibraryPath)/steamapps/common/Town of Salem 2/SalemModLoader/Mods/%(Identity).dll'))" SkipUnchangedFiles="true"/>
-    <Copy SourceFiles="@(Reference -> '$(SteamLibraryPath)/steamapps/common/Town of Salem 2/TownOfSalem2.app/Contents/SalemModLoader/Mods/%(Identity).dll')" DestinationFolder="./libs" Condition="'$(SteamLibraryPath)' != '' And '%(Identity)' != '' And '$(OS)' != 'Windows_NT' And Exists(@(Reference -> '$(SteamLibraryPath)/steamapps/common/Town of Salem 2/TownOfSalem2.app/Contents/SalemModLoader/Mods/%(Identity).dll'))" SkipUnchangedFiles="true"/>
+    <Copy SourceFiles="@(Reference -> '$(SteamLibraryPath)/steamapps/common/Town of Salem 2/SalemModLoader/Mods/%(Identity).dll')" DestinationFolder="./libs" Condition="'$(SteamLibraryPath)' != '' And '%(Identity)' != '' And '$(OS)' == 'Windows_NT' And Exists(@(Reference -> '$(SteamLibraryPath)/steamapps/common/Town of Salem 2/SalemModLoader/Mods/%(Identity).dll'))" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(Reference -> '$(SteamLibraryPath)/steamapps/common/Town of Salem 2/TownOfSalem2.app/Contents/SalemModLoader/Mods/%(Identity).dll')" DestinationFolder="./libs" Condition="'$(SteamLibraryPath)' != '' And '%(Identity)' != '' And '$(OS)' != 'Windows_NT' And Exists(@(Reference -> '$(SteamLibraryPath)/steamapps/common/Town of Salem 2/TownOfSalem2.app/Contents/SalemModLoader/Mods/%(Identity).dll'))" SkipUnchangedFiles="true" />
 
     <!-- Copy over external libraries -->
-    <Copy SourceFiles="@(Reference -> '$(SteamLibraryPath)/steamapps/common/Town of Salem 2/SalemModLoader/Libs/%(Identity).dll')" DestinationFolder="./libs" Condition="'$(SteamLibraryPath)' != '' And '%(Identity)' != '' And '$(OS)' == 'Windows_NT' And Exists(@(Reference -> '$(SteamLibraryPath)/steamapps/common/Town of Salem 2/SalemModLoader/Libs/%(Identity).dll'))" SkipUnchangedFiles="true"/>
-    <Copy SourceFiles="@(Reference -> '$(SteamLibraryPath)/steamapps/common/Town of Salem 2/TownOfSalem2.app/Contents/SalemModLoader/Libs/%(Identity).dll')" DestinationFolder="./libs" Condition="'$(SteamLibraryPath)' != '' And '%(Identity)' != '' And '$(OS)' != 'Windows_NT' And Exists(@(Reference -> '$(SteamLibraryPath)/steamapps/common/Town of Salem 2/TownOfSalem2.app/Contents/SalemModLoader/Libs/%(Identity).dll'))" SkipUnchangedFiles="true"/>
+    <Copy SourceFiles="@(Reference -> '$(SteamLibraryPath)/steamapps/common/Town of Salem 2/SalemModLoader/Libs/%(Identity).dll')" DestinationFolder="./libs" Condition="'$(SteamLibraryPath)' != '' And '%(Identity)' != '' And '$(OS)' == 'Windows_NT' And Exists(@(Reference -> '$(SteamLibraryPath)/steamapps/common/Town of Salem 2/SalemModLoader/Libs/%(Identity).dll'))" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(Reference -> '$(SteamLibraryPath)/steamapps/common/Town of Salem 2/TownOfSalem2.app/Contents/SalemModLoader/Libs/%(Identity).dll')" DestinationFolder="./libs" Condition="'$(SteamLibraryPath)' != '' And '%(Identity)' != '' And '$(OS)' != 'Windows_NT' And Exists(@(Reference -> '$(SteamLibraryPath)/steamapps/common/Town of Salem 2/TownOfSalem2.app/Contents/SalemModLoader/Libs/%(Identity).dll'))" SkipUnchangedFiles="true" />
   </Target>
   <Target Name="Copy" AfterTargets="Build" Condition="'$(SteamLibraryPath)' != ''">
 		<Copy SourceFiles="$(TargetPath)" DestinationFolder="$(SteamLibraryPath)/steamapps/common/Town of Salem 2/SalemModLoader/Mods"></Copy>

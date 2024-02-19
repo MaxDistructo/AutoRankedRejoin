@@ -1,11 +1,12 @@
 ﻿using Server.Shared.Info;
 
-namespace AutoRejoinRanked
+namespace AutoRejoinQueue
 {
     public class State
     {
         private static bool isInitalized = false;
         private static GameType2 lastGameMode;
+        private static bool modWasTriggered = false;
         public static void Init()
         {
             if (!isInitalized)
@@ -35,6 +36,14 @@ namespace AutoRejoinRanked
                 return (GameType)type;
             }
             return GameType.None;
+        }
+        public static bool getModState()
+        {
+            return modWasTriggered;
+        }
+        public static void toggleModTriggered()
+        {
+            modWasTriggered = !modWasTriggered;
         }
     }
     //We define our own enum to support BTOS2 Game Modes
