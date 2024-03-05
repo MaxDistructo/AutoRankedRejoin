@@ -12,8 +12,6 @@ using System.Collections;
 using System.Reflection;
 using UnityEngine;
 
-using BetterTOS2;
-using BetterTOS2.Messages;
 using Game.Interface;
 using System;
 
@@ -43,7 +41,7 @@ public class ModInfo
 {
     public const string PLUGIN_GUID = "AutoRequeue";
     public const string PLUGIN_NAME = "Auto Requeue";
-    public const string PLUGIN_VERSION = "1.2.2";
+    public const string PLUGIN_VERSION = "1.2.3";
 }
 
 //GameSceneController is updated every time the game changes phase.
@@ -65,7 +63,7 @@ public class GameSceneControllerPatch
         if (Service.Game.Sim.info.gameMode.Data.gameType == GameType.Ranked && Service.Game.Sim.info.lobby.Data.isShuttingDown)
         {
             //BTOS2 Compatibility, Checks if the mod is installed and if so, we check if it's the modded ranked game provided.
-            if (ModStates.IsInstalled("curtis.tuba.better.tos2") && BTOSInfo.IS_MODDED)
+            if (ModStates.IsInstalled("curtis.tuba.better.tos2") && BetterTOS2.BTOSInfo.IS_MODDED)
             {
                 State.setLastGameMode(GameType2.BTOS2Casual);
             }
@@ -115,20 +113,20 @@ public class HomeSceneControllerStartPatch
             if (ModStates.IsInstalled("curtis.tuba.better.tos2") && State.getLastGameMode() == GameType2.BTOS2Casual)
             {
                 //START BTOS2 LOGIC FOR REJOINING CASUAL MODE
-                if (AddHomeSceneButtons.joinedQueue.AddSeconds(10.0) > DateTime.Now)
+                if (BetterTOS2.AddHomeSceneButtons.joinedQueue.AddSeconds(10.0) > DateTime.Now)
                 {
                     Service.Game.HudMessage.ShowMessage("You must wait 10 seconds before rejoining the Casual Mode Queue", interrupt: true, messageType: HudMessageType.Warning);
                 }
                 else
                 {
-                    if ((UnityEngine.Object)BTOSInfo.CasualModeController == (UnityEngine.Object)null)
+                    if ((UnityEngine.Object)BetterTOS2.BTOSInfo.CasualModeController == (UnityEngine.Object)null)
                     {
-                        GameObject gameObject = UnityEngine.Object.Instantiate<GameObject>(BTOSInfo.assetBundle.LoadAsset<GameObject>("CasualModeUI"), GameObject.Find("HomeUI(Clone)/HomeScreenMainCanvas/SafeArea/").transform);
+                        GameObject gameObject = UnityEngine.Object.Instantiate<GameObject>(BetterTOS2.BTOSInfo.assetBundle.LoadAsset<GameObject>("CasualModeUI"), GameObject.Find("HomeUI(Clone)/HomeScreenMainCanvas/SafeArea/").transform);
                         gameObject.transform.SetAsLastSibling();
                         gameObject.transform.localScale = new Vector3(1.2f, 1.2f, 1f);
-                        BTOSInfo.CasualModeController = gameObject.AddComponent<CasualModeMenuController>();
+                        BetterTOS2.BTOSInfo.CasualModeController = gameObject.AddComponent<BetterTOS2.CasualModeMenuController>();
                     }
-                    BTOSInfo.NetworkService.SendMessage((Message)new JoinCasualQueue());
+                    BetterTOS2.BTOSInfo.NetworkService.SendMessage((BetterTOS2.Messages.Message)new BetterTOS2.JoinCasualQueue());
                 }
                 //END BTOS2 LOGIC
             }
