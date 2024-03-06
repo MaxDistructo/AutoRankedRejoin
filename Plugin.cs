@@ -40,7 +40,7 @@ public class ModInfo
 {
     public const string PLUGIN_GUID = "AutoRequeue";
     public const string PLUGIN_NAME = "Auto Requeue";
-    public const string PLUGIN_VERSION = "1.2.3";
+    public const string PLUGIN_VERSION = "1.2.4";
 }
 
 //GameSceneController is updated every time the game changes phase.
