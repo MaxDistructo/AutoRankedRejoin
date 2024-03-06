@@ -11,10 +11,6 @@ using SML;
 using System.Collections;
 using System.Reflection;
 using UnityEngine;
-
-using BetterTOS2;
-using BetterTOS2.Messages;
-using Game.Interface;
 using System;
 
 namespace AutoRequeue;
@@ -22,6 +18,7 @@ namespace AutoRequeue;
 [Mod.SalemMod]
 public class Main
 {
+    public static readonly string MOD_ID = "maxdistructo.AutoRejoinRanked";
     public static void Start()
     {
         System.Console.WriteLine("[AutoRequeue] Preparing to take over the WORLD!!!!!");
@@ -43,7 +40,7 @@ public class ModInfo
 {
     public const string PLUGIN_GUID = "AutoRequeue";
     public const string PLUGIN_NAME = "Auto Requeue";
-    public const string PLUGIN_VERSION = "1.2.2";
+    public const string PLUGIN_VERSION = "1.2.4";
 }
 
 //GameSceneController is updated every time the game changes phase.
@@ -65,7 +62,7 @@ public class GameSceneControllerPatch
         if (Service.Game.Sim.info.gameMode.Data.gameType == GameType.Ranked && Service.Game.Sim.info.lobby.Data.isShuttingDown)
         {
             //BTOS2 Compatibility, Checks if the mod is installed and if so, we check if it's the modded ranked game provided.
-            if (ModStates.IsInstalled("curtis.tuba.better.tos2") && BTOSInfo.IS_MODDED)
+            if (State.GetBTOS2Compat().CheckModdedGamemode())
             {
                 State.setLastGameMode(GameType2.BTOS2Casual);
             }
@@ -74,9 +71,9 @@ public class GameSceneControllerPatch
                 //Vanilla Ranked
                 State.setLastGameMode(Service.Game.Sim.info.gameMode.Data.gameType);
             }
-            if (ModSettings.GetInt("Lobby Leave Delay", "maxdistructo.AutoRejoinRanked") > 0)
+            if (ModSettings.GetInt("Lobby Leave Delay", Main.MOD_ID) > 0)
             {
-                __instance.StartCoroutine(Main.PostGameWaitCorouine(ModSettings.GetInt("Lobby Leave Delay", "maxdistructo.AutoRejoinRanked")));
+                __instance.StartCoroutine(Main.PostGameWaitCorouine(ModSettings.GetInt("Lobby Leave Delay", Main.MOD_ID)));
             }
             else
             {
@@ -86,12 +83,12 @@ public class GameSceneControllerPatch
             //Once loaded into the main screen, if the last game mode was Ranked, set it there.
         }
         //In other game modes, the lobby does not end but instead restarts. We check if the restart timer is running and if so, kick the player out and cause the requeue.
-        else if (ModSettings.GetBool("Use for all Game Modes", "maxdistructo.AutoRejoinRanked") && Service.Game.Sim.info.lobby.Data.restartTimer.GetWholeSecondsRemaining() > 0)
+        else if (ModSettings.GetBool("Use for all Game Modes", Main.MOD_ID) && Service.Game.Sim.info.lobby.Data.restartTimer.GetWholeSecondsRemaining() > 0)
         {
             State.setLastGameMode(Service.Game.Sim.info.gameMode.Data.gameType);
-            if (ModSettings.GetInt("Lobby Leave Delay", "maxdistructo.AutoRejoinRanked") > 0)
+            if (ModSettings.GetInt("Lobby Leave Delay", Main.MOD_ID) > 0)
             {
-                __instance.StartCoroutine(Main.PostGameWaitCorouine(ModSettings.GetInt("Lobby Leave Delay", "maxdistructo.AutoRejoinRanked")));
+                __instance.StartCoroutine(Main.PostGameWaitCorouine(ModSettings.GetInt("Lobby Leave Delay", Main.MOD_ID)));
             }
             else
             {
@@ -102,35 +99,20 @@ public class GameSceneControllerPatch
     }
 }
 //We patch the HomeScene controller to setup our data storage state and joining a gamemode once we are sent back here by the GameScene controller patch
-[HarmonyPatch(typeof(HomeSceneController), "Start")]
+[HarmonyPatch(typeof(HomeSceneController), "Autojoin")]
 public class HomeSceneControllerStartPatch
 {
-    [HarmonyPrefix]
+    [HarmonyPostfix]
     public static void Postfix(HomeSceneController __instance)
     {
+        Console.WriteLine("[AutoRequeue] PATCH ENTRY (HomeSceneController)");
         State.Init();
-        if ((State.getLastGameMode() == GameType2.Ranked || State.getLastGameMode() == GameType2.BTOS2Casual || (ModSettings.GetBool("Use for all Game Modes", "maxdistructo.AutoRejoinRanked") && State.getLastGameMode() != GameType2.None)) && State.getModState())
+        if ((State.getLastGameMode() == GameType2.Ranked || State.getLastGameMode() == GameType2.BTOS2Casual || (ModSettings.GetBool("Use for all Game Modes", Main.MOD_ID) && State.getLastGameMode() != GameType2.None)) && State.getModState())
         {
             State.toggleModTriggered();
-            if (ModStates.IsInstalled("curtis.tuba.better.tos2") && State.getLastGameMode() == GameType2.BTOS2Casual)
+            if (State.getLastGameMode() == GameType2.BTOS2Casual)
             {
-                //START BTOS2 LOGIC FOR REJOINING CASUAL MODE
-                if (AddHomeSceneButtons.joinedQueue.AddSeconds(10.0) > DateTime.Now)
-                {
-                    Service.Game.HudMessage.ShowMessage("You must wait 10 seconds before rejoining the Casual Mode Queue", interrupt: true, messageType: HudMessageType.Warning);
-                }
-                else
-                {
-                    if ((UnityEngine.Object)BTOSInfo.CasualModeController == (UnityEngine.Object)null)
-                    {
-                        GameObject gameObject = UnityEngine.Object.Instantiate<GameObject>(BTOSInfo.assetBundle.LoadAsset<GameObject>("CasualModeUI"), GameObject.Find("HomeUI(Clone)/HomeScreenMainCanvas/SafeArea/").transform);
-                        gameObject.transform.SetAsLastSibling();
-                        gameObject.transform.localScale = new Vector3(1.2f, 1.2f, 1f);
-                        BTOSInfo.CasualModeController = gameObject.AddComponent<CasualModeMenuController>();
-                    }
-                    BTOSInfo.NetworkService.SendMessage((Message)new JoinCasualQueue());
-                }
-                //END BTOS2 LOGIC
+                State.GetBTOS2Compat().JoinCasualMode();
             }
             else if (State.getLastGameMode() == GameType2.Custom || State.getLastGameMode() == GameType2.BTOS2CustomPlus)
             {
@@ -148,5 +130,6 @@ public class HomeSceneControllerStartPatch
                 //Let AutoAcceptRanked take over from here in the RankedQueueController
             }
         }
+        Console.WriteLine("[AutoRequeue] HomeSceneController patch complete");
     }
 }

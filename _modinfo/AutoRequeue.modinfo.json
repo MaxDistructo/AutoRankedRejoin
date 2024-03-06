@@ -3,7 +3,7 @@
   "DisplayName": "AutoRequeue",
   "Authors": [ "MaxDistructo" ],
   "Description": "Automatically rejoins the Ranked queue after you are done with a Ranked Game. Also works with BetterTOS2 Classic for automatically rejoining.",
-  "Version": "1.2.2",
+  "Version": "1.2.4",
   "RequiredMods": [],
   "ConflictingMods": [],
   "Settings": {
