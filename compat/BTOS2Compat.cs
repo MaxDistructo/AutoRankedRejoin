@@ -33,7 +33,7 @@ namespace AutoRequeue.compat
                     gameObject.transform.localScale = new Vector3(1.2f, 1.2f, 1f);
                     BetterTOS2.BTOSInfo.CasualModeController = gameObject.AddComponent<BetterTOS2.CasualModeMenuController>();
                 }
-                BetterTOS2.BTOSInfo.NetworkService.SendMessage((BetterTOS2.Messages.Message)new BetterTOS2.JoinCasualQueue());
+                BetterTOS2.BTOSInfo.NetworkService.SendMessage(new BetterTOS2.Messages.JoinCasualQueue());
             }
             //END BTOS2 LOGIC
         }
