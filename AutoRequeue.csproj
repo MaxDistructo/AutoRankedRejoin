@@ -55,6 +55,10 @@
       <HintPath>.\libs\UnityEngine.dll</HintPath>
     </Reference>
 
+    <Reference Include="UnityEngine.AssetBundleModule">
+      <HintPath>.\libs\UnityEngine.AssetBundleModule.cll</HintPath>
+    </Reference>
+
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>.\libs\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
